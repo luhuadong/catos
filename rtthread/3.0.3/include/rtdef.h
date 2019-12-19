@@ -47,4 +47,15 @@ typedef rt_base_t       rt_off_t;
 
 #define RT_NULL         (0)
 
+
+struct rt_thread
+{
+	void        *sp;          /*  */
+	void        *entry;       /*  */
+	void        *parameter;   /*  */
+	void        *stack_addr;  /*  */
+	rt_uint32_t stack_size;   /*  */
+};
+typedef struct rt_thread *rt_thread_t;
+
 #endif /* __RT_DEF_H__ */
