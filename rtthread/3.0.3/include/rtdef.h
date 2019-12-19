@@ -47,14 +47,22 @@ typedef rt_base_t       rt_off_t;
 
 #define RT_NULL         (0)
 
+struct rt_list_node
+{
+	struct rt_list_node *next;  /* point to the next node */
+	struct rt_list_node *prev;  /* point to the prev node */
+};
+typedef struct rt_list_node rt_list_t;
 
 struct rt_thread
 {
-	void        *sp;          /*  */
-	void        *entry;       /*  */
-	void        *parameter;   /*  */
-	void        *stack_addr;  /*  */
-	rt_uint32_t stack_size;   /*  */
+	void        *sp;          /* thread stack pointer */
+	void        *entry;       /* thread entry address */
+	void        *parameter;   /* thread formal parameter */
+	void        *stack_addr;  /* the stack address */
+	rt_uint32_t stack_size;   /* stack size (byte) */
+	
+	rt_list_t tlist;          /* thread list node */
 };
 typedef struct rt_thread *rt_thread_t;
 
