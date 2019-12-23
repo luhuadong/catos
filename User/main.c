@@ -12,6 +12,10 @@ rt_uint8_t rt_flag2_thread_stack[512];
 
 rt_uint32_t flag1, flag2;
 
+/* define thread control block */
+struct rt_thread rt_flag1_thread;
+struct rt_thread rt_flag2_thread;
+
 void delay(rt_uint32_t count)
 {
 	for (; count!=0; count--);

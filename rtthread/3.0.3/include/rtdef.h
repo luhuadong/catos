@@ -23,8 +23,22 @@ typedef rt_ubase_t      rt_dev_t;
 typedef rt_base_t       rt_off_t;
 
 /* bool */
-#define RT_TRUE         1;
-#define RT_FALSE        0;
+#define RT_TRUE         1
+#define RT_FALSE        0
+
+/* error code */
+#define RT_EOK          0
+#define RT_ERROR        1
+#define RT_ETIMEOUT     2
+#define RT_EFULL        3
+#define RT_EEMPTY       4
+#define RT_ENOMEM       5
+#define RT_ENOSYS       6
+#define RT_EBUSY        7
+#define RT_EIO          8
+#define RT_EINTR        9
+#define RT_EINVAL       10
+
 
 #ifdef __CC_ARM
 #define rt_inline       static __inline

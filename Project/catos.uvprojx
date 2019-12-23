@@ -415,6 +415,26 @@
               <FileType>5</FileType>
               <FilePath>..\rtthread\3.0.3\include\rtconfig.h</FilePath>
             </File>
+            <File>
+              <FileName>thread.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\rtthread\3.0.3\src\thread.c</FilePath>
+            </File>
+            <File>
+              <FileName>rtservice.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\rtthread\3.0.3\include\rtservice.h</FilePath>
+            </File>
+            <File>
+              <FileName>rtthread.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\rtthread\3.0.3\include\rtthread.h</FilePath>
+            </File>
+            <File>
+              <FileName>cpuport.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\rtthread\3.0.3\libcpu\arm\cortex-m3\cpuport.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
