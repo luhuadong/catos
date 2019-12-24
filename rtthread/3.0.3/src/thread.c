@@ -2,6 +2,17 @@
 #include "rtdef.h"
 #include "rtservice.h"
 
+/**
+ * This function will initialize thread
+ * 
+ * @param thread the control block of thread
+ * @param entry the entry of thread
+ * @param parameter the parameter of entry
+ * @param stack_start the beginning stack address
+ * @param stack_size the size of stack
+ * 
+ * @return RT_EOK if not error
+ */
 rt_err_t rt_thread_init(struct rt_thread *thread,
                         void (*entry)(void *parameter),
 												void *parameter,

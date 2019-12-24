@@ -44,8 +44,13 @@ rt_uint8_t *rt_hw_stack_init(void       *tentry,
 	rt_uint8_t *stk;
 	unsigned long i;
 	
+	/* get the top pointer of stack 	*/
 	stk  = stack_addr + sizeof(rt_uint32_t);
+	
+	/* let stk pointer aligned down with 8-bytes */
 	stk  = (rt_uint8_t *)RT_ALIGN_DOWN((rt_uint32_t)stk, 8);
+	
+	/* move down sizeof(struct stack_frame) offset */
 	stk -= sizeof(struct stack_frame);
 	stack_frame = (struct stack_frame *)stk;
 	
@@ -53,4 +58,15 @@ rt_uint8_t *rt_hw_stack_init(void       *tentry,
 	{
 		((rt_uint32_t *)stack_frame)[i] = 0xdeadbeef;
 	}
+	
+	stack_frame->exception_stack_frame.r0  = (unsigned long)parameter; /* r0: argument */
+	stack_frame->exception_stack_frame.r1  = 0;                        /* r1 */
+	stack_frame->exception_stack_frame.r2  = 0;                        /* r2 */
+	stack_frame->exception_stack_frame.r3  = 0;                        /* r3 */
+	stack_frame->exception_stack_frame.r12 = 0;                        /* r12 */
+	stack_frame->exception_stack_frame.lr  = 0;                        /* lr: initialized to 0 temporarily */
+	stack_frame->exception_stack_frame.pc  = (unsigned long)tentry;    /* entry point, pc */
+	stack_frame->exception_stack_frame.psr = 0x01000000L;              /* PSR */
+	
+	return stk;
 }

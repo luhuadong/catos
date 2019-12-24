@@ -1,8 +1,7 @@
 /*
  */
  
-#include "rtdef.h"
-#include "rtconfig.h"
+#include "rtthread.h"
 
 ALIGN(RT_ALIGN_SIZE)
 
@@ -45,6 +44,24 @@ void flag2_thread_entry(void *p_arg)
 
 int main(void)
 {
+	
+	/* initialized thread */
+	rt_thread_init(&rt_flag1_thread,
+	               flag1_thread_entry,
+								 RT_NULL,
+	               &rt_flag1_thread_stack[0],
+	               sizeof(rt_flag1_thread_stack));
+	
+	rt_list_insert_before(&(rt_thread_priority_table[0]), &(rt_flag1_thread.tlist));
+	
+	rt_thread_init(&rt_flag2_thread,
+	               flag2_thread_entry,
+								 RT_NULL,
+	               &rt_flag2_thread_stack[0],
+	               sizeof(rt_flag2_thread_stack));
+	
+	rt_list_insert_before(&(rt_thread_priority_table[1]), &(rt_flag2_thread.tlist));
+	
 	for(;;)
 	{
 		/**/
