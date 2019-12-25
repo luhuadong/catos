@@ -1,6 +1,5 @@
 
-#include "rtdef.h"
-#include "rtservice.h"
+#include "rtthread.h"
 
 /**
  * This function will initialize thread

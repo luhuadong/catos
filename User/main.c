@@ -2,6 +2,15 @@
  */
  
 #include "rtthread.h"
+#include "ARMCM3.h"
+
+rt_uint32_t flag1, flag2;
+
+extern rt_list_t rt_thread_priority_table[RT_THREAD_PRIORITY_MAX];
+
+/* define thread control block */
+struct rt_thread rt_flag1_thread;
+struct rt_thread rt_flag2_thread;
 
 ALIGN(RT_ALIGN_SIZE)
 
@@ -9,11 +18,6 @@ ALIGN(RT_ALIGN_SIZE)
 rt_uint8_t rt_flag1_thread_stack[512];
 rt_uint8_t rt_flag2_thread_stack[512];
 
-rt_uint32_t flag1, flag2;
-
-/* define thread control block */
-struct rt_thread rt_flag1_thread;
-struct rt_thread rt_flag2_thread;
 
 void delay(rt_uint32_t count)
 {
@@ -28,6 +32,8 @@ void flag1_thread_entry(void *p_arg)
 		delay(100);
 		flag1 = 0;
 		delay(100);
+		
+		rt_schedule();
 	}
 }
 
@@ -39,11 +45,15 @@ void flag2_thread_entry(void *p_arg)
 		delay(100);
 		flag2 = 0;
 		delay(100);
+		
+		rt_schedule();
 	}
 }
 
 int main(void)
 {
+	/* initialized scheduler */
+	rt_system_scheduler_init();
 	
 	/* initialized thread */
 	rt_thread_init(&rt_flag1_thread,
@@ -62,8 +72,6 @@ int main(void)
 	
 	rt_list_insert_before(&(rt_thread_priority_table[1]), &(rt_flag2_thread.tlist));
 	
-	for(;;)
-	{
-		/**/
-	}
+	rt_system_scheduler_start();
+	
 }

@@ -401,6 +401,13 @@
         </Group>
         <Group>
           <GroupName>rtt/ports</GroupName>
+          <Files>
+            <File>
+              <FileName>context_rvds.S</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.S</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>rtt/source</GroupName>
@@ -439,6 +446,11 @@
               <FileName>scheduler.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\rtthread\3.0.3\src\scheduler.c</FilePath>
+            </File>
+            <File>
+              <FileName>rthw.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\rtthread\3.0.3\include\rthw.h</FilePath>
             </File>
           </Files>
         </Group>
