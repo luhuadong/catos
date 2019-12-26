@@ -24,6 +24,31 @@ NVIC_PENDSVSET  EQU    0x10000000    ; Toggle the value of PendSV exception
 
 ;/*
 ; *---------------------------------------------------------------
+; * rt_base_t rt_hw_interrupt_disable();
+; *
+; *---------------------------------------------------------------
+; */
+rt_hw_interrupt_disable    PROC
+	EXPORT rt_hw_interrupt_disable
+	MRS    r0, PRIMASK
+	CPSID  I
+	BX     LR
+	ENDP
+
+;/*
+; *---------------------------------------------------------------
+; * void rt_hw_interrupt_enable(rt_base_t level);
+; *
+; *---------------------------------------------------------------
+; */
+rt_hw_interrupt_enable    PROC
+	EXPORT rt_hw_interrupt_enable
+	MSR    PRIMASK, r0
+	BX     LR
+	ENDP
+
+;/*
+; *---------------------------------------------------------------
 ; * void rt_hw_context_switch(rt_uint32_t from, rt_uint32_t to);
 ; * r0 --> from
 ; * r1 --> to
