@@ -57,6 +57,7 @@ int main(void)
 	
 	/* initialized thread */
 	rt_thread_init(&rt_flag1_thread,
+	               "t_flag1",
 	               flag1_thread_entry,
 								 RT_NULL,
 	               &rt_flag1_thread_stack[0],
@@ -65,6 +66,7 @@ int main(void)
 	rt_list_insert_before(&(rt_thread_priority_table[0]), &(rt_flag1_thread.tlist));
 	
 	rt_thread_init(&rt_flag2_thread,
+	               "t_flag2",
 	               flag2_thread_entry,
 								 RT_NULL,
 	               &rt_flag2_thread_stack[0],

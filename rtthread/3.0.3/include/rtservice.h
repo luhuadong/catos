@@ -1,3 +1,6 @@
+#ifndef __RT_SERVICE_H__
+#define __RT_SERVICE_H__
+
 #include "rtdef.h"
 
 /* init list */
@@ -35,3 +38,4 @@ rt_inline void rt_list_remove(rt_list_t *n)
 	n->next = n->prev = n;
 }
 
+#endif
