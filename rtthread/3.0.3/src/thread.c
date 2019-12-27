@@ -1,5 +1,6 @@
 
-#include "rtthread.h"
+#include <rtthread.h>
+#include <rthw.h>
 
 /**
  * This function will initialize thread
@@ -35,4 +36,14 @@ rt_err_t rt_thread_init(struct rt_thread *thread,
 	                         (void *)((char *)thread->stack_addr + thread->stack_size - 4));
 	
 	return RT_EOK;
+}
+
+void rt_thread_delay(rt_tick_t tick)
+{
+	struct rt_thread *thread;
+	
+	thread = rt_current_thread;
+	thread->remaining_tick = tick;
+	
+	rt_schedule();
 }

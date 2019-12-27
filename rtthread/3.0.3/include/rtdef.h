@@ -1,7 +1,7 @@
 #ifndef __RT_DEF_H__
 #define __RT_DEF_H__
 
-#include "rtconfig.h"
+#include <rtconfig.h>
 
 /* data type */
 typedef signed char     rt_int8_t;
@@ -118,6 +118,8 @@ struct rt_thread
 	void        *parameter;   /* thread formal parameter */
 	void        *stack_addr;  /* the stack address */
 	rt_uint32_t stack_size;   /* stack size (byte) */
+	
+	rt_ubase_t  remaining_tick;  /* block delay */
 };
 typedef struct rt_thread *rt_thread_t;
 

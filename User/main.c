@@ -1,12 +1,9 @@
 /*
  */
  
-#include "rtthread.h"
+#include <rtthread.h>
+#include <rthw.h>
 #include "ARMCM3.h"
-
-rt_uint32_t flag1, flag2;
-
-extern rt_list_t rt_thread_priority_table[RT_THREAD_PRIORITY_MAX];
 
 /* define thread control block */
 struct rt_thread rt_flag1_thread;
@@ -18,6 +15,14 @@ ALIGN(RT_ALIGN_SIZE)
 rt_uint8_t rt_flag1_thread_stack[512];
 rt_uint8_t rt_flag2_thread_stack[512];
 
+/* function declaration */
+void flag1_thread_entry(void *p_arg);
+void flag2_thread_entry(void *p_arg);
+
+rt_uint32_t flag1, flag2;
+
+extern rt_list_t rt_thread_priority_table[RT_THREAD_PRIORITY_MAX];
+
 
 void delay(rt_uint32_t count)
 {
@@ -28,12 +33,19 @@ void flag1_thread_entry(void *p_arg)
 {
 	for (;;)
 	{
+#if 0
 		flag1 = 1;
 		delay(100);
 		flag1 = 0;
 		delay(100);
 		
 		rt_schedule();
+#else
+		flag1 = 1;
+		rt_thread_delay(2);
+		flag1 = 0;
+		rt_thread_delay(2);
+#endif
 	}
 }
 
@@ -41,19 +53,46 @@ void flag2_thread_entry(void *p_arg)
 {
 	for (;;)
 	{
+#if 0
 		flag2 = 1;
 		delay(100);
 		flag2 = 0;
 		delay(100);
 		
 		rt_schedule();
+#else
+		flag2 = 1;
+		rt_thread_delay(2);
+		flag2 = 0;
+		rt_thread_delay(2);
+#endif
 	}
+}
+
+void SysTick_Handler(void)
+{
+	rt_interrupt_enter();
+	rt_tick_increase();
+	rt_interrupt_leave();
 }
 
 int main(void)
 {
+	/* 硬件初始化 */
+	/* 将硬件相关的初始化放在这里，如果是软件仿真则没有初始化代码 */
+	
+	
+	/* 关中断 */
+	rt_hw_interrupt_disable();
+	
+	/* SysTick中断频率设置，调用固件库函数SysTick_Config() */
+	SysTick_Config(SystemCoreClock / RT_TICK_PER_SECOND);
+	
 	/* initialized scheduler */
 	rt_system_scheduler_init();
+	
+	/* initialized idle thread */
+	rt_thread_idle_init();
 	
 	/* initialized thread */
 	rt_thread_init(&rt_flag1_thread,

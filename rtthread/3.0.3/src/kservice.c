@@ -1,4 +1,4 @@
-#include "rtdef.h"
+#include <rtthread.h>
 
 /**
  * This function will copy string no more than n bytes.
