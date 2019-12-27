@@ -2,7 +2,6 @@
 #include <rthw.h>
 
 static rt_tick_t rt_tick = 0;
-extern rt_list_t rt_thread_priority_table[RT_THREAD_PRIORITY_MAX];
 	
 void rt_tick_increase(void)
 {
@@ -17,6 +16,12 @@ void rt_tick_increase(void)
 		if(thread->remaining_tick > 0)
 		{
 			thread->remaining_tick--;
+			
+			if(thread->remaining_tick == 0)
+			{
+				//rt_schedule_insert_thread(thread);
+				rt_thread_ready_priority_group |= thread->number_mask;
+			}
 		}
 	}
 	

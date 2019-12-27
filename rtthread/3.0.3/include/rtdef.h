@@ -29,18 +29,31 @@ typedef rt_base_t       rt_off_t;
 #define RT_FALSE        0
 
 /* error code */
-#define RT_EOK          0
-#define RT_ERROR        1
-#define RT_ETIMEOUT     2
-#define RT_EFULL        3
-#define RT_EEMPTY       4
-#define RT_ENOMEM       5
-#define RT_ENOSYS       6
-#define RT_EBUSY        7
-#define RT_EIO          8
-#define RT_EINTR        9
-#define RT_EINVAL       10
+#define RT_EOK          0    /* 没有错误 */
+#define RT_ERROR        1    /* 一个常规错误 */
+#define RT_ETIMEOUT     2    /* 超时 */
+#define RT_EFULL        3    /* 资源已满 */
+#define RT_EEMPTY       4    /* 资源为空 */
+#define RT_ENOMEM       5    /* 没有内存 */
+#define RT_ENOSYS       6    /* No system */
+#define RT_EBUSY        7    /* Busy */
+#define RT_EIO          8    /* IO error */
+#define RT_EINTR        9    /* 中断系统调用 */
+#define RT_EINVAL       10   /* 无效形参 */
 
+/* thread stat */
+#define RT_THREAD_INIT                  0x00               /* 初始态 */
+#define RT_THREAD_READY                 0x01               /* 就绪态 */
+#define RT_THREAD_SUSPEND               0x02               /* 挂起态 */
+#define RT_THREAD_RUNNING               0x03               /* 运行态 */
+#define RT_THREAD_BLOCK                 RT_THREAD_SUSPEND  /* 阻塞态 */
+#define RT_THREAD_CLOSE                 0x04               /* 关闭态 */
+#define RT_THREAD_STAT_MASK             0x0f
+
+#define RT_THREAD_STAT_SIGNAL           0x10
+#define RT_THREAD_STAT_SIGNAL_READY     (RT_THREAD_STAT_SIGNAL | RT_THREAD_READY)
+#define RT_THREAD_STAT_SIGNAL_SUSPEND   0x20
+#define RT_THREAD_STAT_SIGNAL_MASK      0xf0
 
 #ifdef __CC_ARM
 #define rt_inline       static __inline
@@ -107,19 +120,27 @@ struct rt_object_information
 struct rt_thread
 {
 	/* rt object */
-	char       name[RT_NAME_MAX];
-	rt_uint8_t type;
-	rt_uint8_t flag;
-	rt_list_t  list;
+	char        name[RT_NAME_MAX];  /* name */
+	rt_uint8_t  type;               /* type */
+	rt_uint8_t  flag;               /* status */
+	rt_list_t   list;               /* object list node */
 	
-	rt_list_t   tlist;        /* thread list node */
-	void        *sp;          /* thread stack pointer */
-	void        *entry;       /* thread entry address */
-	void        *parameter;   /* thread formal parameter */
-	void        *stack_addr;  /* the stack address */
-	rt_uint32_t stack_size;   /* stack size (byte) */
+	rt_list_t   tlist;              /* thread list node */
+	void        *sp;                /* thread stack pointer */
+	void        *entry;             /* thread entry address */
+	void        *parameter;         /* thread formal parameter */
+	void        *stack_addr;        /* the stack address */
+	rt_uint32_t stack_size;         /* stack size (byte) */
 	
-	rt_ubase_t  remaining_tick;  /* block delay */
+	rt_ubase_t  remaining_tick;     /* block delay */
+	
+	rt_uint8_t  current_priority;   /* current priority */
+	rt_uint8_t  init_priority;      /* initial priority */
+	rt_uint32_t number_mask;        /* mask for current priority */
+	                                /* equal the index on rt_thread_ready_priority_group */
+	
+	rt_err_t    error;              /* error code */
+	rt_uint8_t  stat;               /* thread stat */
 };
 typedef struct rt_thread *rt_thread_t;
 

@@ -38,4 +38,13 @@ rt_inline void rt_list_remove(rt_list_t *n)
 	n->next = n->prev = n;
 }
 
+rt_inline rt_bool_t rt_list_isempty(rt_list_t *l)
+{
+	if(l->next == l)
+	{
+		return RT_TRUE;
+	}
+	return RT_FALSE;
+}
+
 #endif

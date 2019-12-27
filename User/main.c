@@ -100,18 +100,22 @@ int main(void)
 	               flag1_thread_entry,
 								 RT_NULL,
 	               &rt_flag1_thread_stack[0],
-	               sizeof(rt_flag1_thread_stack));
+	               sizeof(rt_flag1_thread_stack),
+								 2);
 	
-	rt_list_insert_before(&(rt_thread_priority_table[0]), &(rt_flag1_thread.tlist));
+	//rt_list_insert_before(&(rt_thread_priority_table[0]), &(rt_flag1_thread.tlist));
+	rt_thread_startup(&rt_flag1_thread);
 	
 	rt_thread_init(&rt_flag2_thread,
 	               "t_flag2",
 	               flag2_thread_entry,
 								 RT_NULL,
 	               &rt_flag2_thread_stack[0],
-	               sizeof(rt_flag2_thread_stack));
+	               sizeof(rt_flag2_thread_stack),
+								 3);
 	
-	rt_list_insert_before(&(rt_thread_priority_table[1]), &(rt_flag2_thread.tlist));
+	//rt_list_insert_before(&(rt_thread_priority_table[1]), &(rt_flag2_thread.tlist));
+	rt_thread_startup(&rt_flag2_thread);
 	
 	rt_system_scheduler_start();
 	
