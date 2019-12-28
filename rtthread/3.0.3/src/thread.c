@@ -43,6 +43,14 @@ rt_err_t rt_thread_init(struct rt_thread *thread,
 	thread->error = RT_EOK;
 	thread->stat  = RT_THREAD_INIT;
 	
+	/* thread timer */
+	rt_timer_init(&(thread->thread_timer),
+	              thread->name,
+	              rt_thread_timeout,
+	              thread,
+	              0,
+	              RT_TIMER_FLAG_ONE_SHOT);
+	
 	return RT_EOK;
 }
 
@@ -99,8 +107,30 @@ rt_err_t rt_thread_resume(rt_thread_t thread)
 	return RT_EOK;
 }
 
-void rt_thread_delay(rt_tick_t tick)
+rt_err_t rt_thread_suspend(rt_thread_t thread)
 {
+	register rt_base_t temp;
+	
+	if((thread->stat & RT_THREAD_STAT_MASK) != RT_THREAD_READY)
+	{
+		return -RT_ERROR;
+	}
+	
+	temp = rt_hw_interrupt_disable();
+	
+	thread->stat = RT_THREAD_SUSPEND;
+	rt_schedule_remove_thread(thread);
+	rt_timer_stop(&(thread->thread_timer));
+	
+	rt_hw_interrupt_enable(temp);
+	
+	return RT_EOK;
+}
+
+//void rt_thread_delay(rt_tick_t tick)
+rt_err_t rt_thread_delay(rt_tick_t tick)
+{
+#if 0
 	register rt_base_t temp;
 	struct rt_thread *thread;
 	
@@ -115,4 +145,41 @@ void rt_thread_delay(rt_tick_t tick)
 	rt_hw_interrupt_enable(temp);
 	
 	rt_schedule();
+#else
+	return rt_thread_sleep(tick);
+#endif
+}
+
+void rt_thread_timeout(void *parameter)
+{
+	struct rt_thread *thread;
+	
+	thread = (struct rt_thread *)parameter;
+	
+	thread->error = -RT_ETIMEOUT;
+	
+	rt_list_remove(&(thread->tlist));
+	
+	rt_schedule_insert_thread(thread);
+	
+	rt_schedule();
+}
+
+rt_err_t rt_thread_sleep(rt_tick_t tick)
+{
+	register rt_base_t temp;
+	struct rt_thread *thread;
+	
+	temp = rt_hw_interrupt_disable();
+	
+	thread = rt_current_thread;
+	rt_thread_suspend(thread);
+	rt_timer_control(&(thread->thread_timer), RT_TIMER_CTRL_SET_TIME, &tick);
+	rt_timer_start(&(thread->thread_timer));
+	
+	rt_hw_interrupt_enable(temp);
+	
+	rt_schedule();
+	
+	return RT_EOK;
 }

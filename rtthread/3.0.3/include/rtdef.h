@@ -55,6 +55,30 @@ typedef rt_base_t       rt_off_t;
 #define RT_THREAD_STAT_SIGNAL_SUSPEND   0x20
 #define RT_THREAD_STAT_SIGNAL_MASK      0xf0
 
+/* timer stat */
+#define RT_TIMER_FLAG_DEACTIVATED       0x0
+#define RT_TIMER_FLAG_ACTIVATED         0x1
+
+#define RT_TIMER_FLAG_ONE_SHOT          0x0
+#define RT_TIMER_FLAG_PERIODIC          0x2
+
+#define RT_TIMER_FLAG_HARD_TIMER        0x0
+#define RT_TIMER_FLAG_SOFT_TIMER        0x4
+
+#define RT_TIMER_CTRL_GET_TIME          0x0
+#define RT_TIMER_CTRL_SET_TIME          0x1
+#define RT_TIMER_CTRL_SET_ONESHOT       0x2
+#define RT_TIMER_CTRL_SET_PERIODIC      0x3
+
+#define RT_TICK_MAX                     0xffffffff
+
+/**
+ * clock & timer macros
+ */
+#define RT_TIMER_SKIP_LIST_LEVEL    1
+#define RT_TIMER_SKIP_LIST_MASK     0x3
+
+
 #ifdef __CC_ARM
 #define rt_inline       static __inline
 #define ALIGN(n)        __attribute__((aligned(n)))
@@ -75,6 +99,7 @@ typedef rt_base_t       rt_off_t;
 #define RT_ALIGN_DOWN(size, align)  ((size) & ~((align)-1))
 
 #define RT_NULL         (0)
+
 
 enum rt_object_class_type
 {
@@ -117,6 +142,20 @@ struct rt_object_information
 	rt_size_t                 object_size;
 };
 
+struct rt_timer
+{
+	struct rt_object parent;
+	
+	rt_list_t row[RT_TIMER_SKIP_LIST_LEVEL];
+	
+	void (*timeout_func)(void *parameter);
+	void *parameter;
+	
+	rt_tick_t init_tick;
+	rt_tick_t timeout_tick;
+};
+typedef struct rt_timer *rt_timer_t;
+
 struct rt_thread
 {
 	/* rt object */
@@ -141,12 +180,10 @@ struct rt_thread
 	
 	rt_err_t    error;              /* error code */
 	rt_uint8_t  stat;               /* thread stat */
+	
+	struct rt_timer thread_timer;   /* thread timer */
 };
 typedef struct rt_thread *rt_thread_t;
 
-struct rt_timer
-{
-	struct rt_object obj;
-};
 
 #endif /* __RT_DEF_H__ */
