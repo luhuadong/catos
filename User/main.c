@@ -66,7 +66,8 @@ int main(void)
 								 RT_NULL,
 	               &rt_flag1_thread_stack[0],
 	               sizeof(rt_flag1_thread_stack),
-								 2);
+								 2,
+								 4);
 	
 	//rt_list_insert_before(&(rt_thread_priority_table[0]), &(rt_flag1_thread.tlist));
 	rt_thread_startup(&rt_flag1_thread);
@@ -77,7 +78,8 @@ int main(void)
 								 RT_NULL,
 	               &rt_flag2_thread_stack[0],
 	               sizeof(rt_flag2_thread_stack),
-								 3);
+								 3,
+								 2);
 	
 	//rt_list_insert_before(&(rt_thread_priority_table[1]), &(rt_flag2_thread.tlist));
 	rt_thread_startup(&rt_flag2_thread);
@@ -88,7 +90,8 @@ int main(void)
 								 RT_NULL,
 	               &rt_flag3_thread_stack[0],
 	               sizeof(rt_flag3_thread_stack),
-								 4);
+								 3,
+								 3);
 	rt_thread_startup(&rt_flag3_thread);
 	
 	rt_system_scheduler_start();
@@ -108,9 +111,9 @@ void flag1_thread_entry(void *p_arg)
 		rt_schedule();
 #else
 		flag1 = 1;
-		rt_thread_delay(2);
+		rt_thread_delay(3);
 		flag1 = 0;
-		rt_thread_delay(2);
+		rt_thread_delay(3);
 #endif
 	}
 }
@@ -128,9 +131,11 @@ void flag2_thread_entry(void *p_arg)
 		rt_schedule();
 #else
 		flag2 = 1;
-		rt_thread_delay(2);
+		//rt_thread_delay(2);
+		delay(100);
 		flag2 = 0;
-		rt_thread_delay(2);
+		//rt_thread_delay(2);
+		delay(100);
 #endif
 	}
 }
@@ -140,8 +145,10 @@ void flag3_thread_entry(void *p_arg)
 	for (;;)
 	{
 		flag3 = 1;
-		rt_thread_delay(3);
+		//rt_thread_delay(3);
+		delay(100);
 		flag3 = 0;
-		rt_thread_delay(3);
+		//rt_thread_delay(3);
+		delay(100);
 	}
 }

@@ -171,7 +171,8 @@ struct rt_thread
 	void        *stack_addr;        /* the stack address */
 	rt_uint32_t stack_size;         /* stack size (byte) */
 	
-	rt_ubase_t  remaining_tick;     /* block delay */
+	rt_ubase_t  init_tick;          /* initial tick */
+	rt_ubase_t  remaining_tick;     /* block delay -> remaining tick*/
 	
 	rt_uint8_t  current_priority;   /* current priority */
 	rt_uint8_t  init_priority;      /* initial priority */

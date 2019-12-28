@@ -33,7 +33,18 @@ void rt_tick_increase(void)
 	
 	rt_schedule();
 #else
+	struct rt_thread *thread;
+	
 	++rt_tick;
+	thread = rt_thread_self();
+	--thread->remaining_tick;
+	
+	if(thread->remaining_tick == 0)
+	{
+		thread->remaining_tick = thread->init_tick;
+		rt_thread_yield();
+	}
+	
 	rt_timer_check();
 #endif
 }

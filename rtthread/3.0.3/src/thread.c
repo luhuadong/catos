@@ -19,7 +19,8 @@ rt_err_t rt_thread_init(struct rt_thread *thread,
 												void             *parameter,
 												void             *stack_start,
 												rt_uint32_t      stack_size,
-												rt_uint8_t       priority)
+												rt_uint8_t       priority,
+												rt_uint32_t      tick)
 {
 	rt_object_init((rt_object_t)thread, RT_Object_Class_Thread, name);
 	
@@ -42,6 +43,10 @@ rt_err_t rt_thread_init(struct rt_thread *thread,
 	
 	thread->error = RT_EOK;
 	thread->stat  = RT_THREAD_INIT;
+	
+	/* time slice */
+	thread->init_tick      = tick;
+	thread->remaining_tick = tick;
 	
 	/* thread timer */
 	rt_timer_init(&(thread->thread_timer),
@@ -181,5 +186,27 @@ rt_err_t rt_thread_sleep(rt_tick_t tick)
 	
 	rt_schedule();
 	
+	return RT_EOK;
+}
+
+rt_err_t rt_thread_yield(void)
+{
+	register rt_base_t level;
+	struct rt_thread *thread;
+	
+	level = rt_hw_interrupt_disable();
+	
+	thread = rt_current_thread;
+	
+	if((thread->stat & RT_THREAD_STAT_MASK) == RT_THREAD_READY && thread->tlist.next != thread->tlist.prev)
+	{
+		rt_list_remove(&(thread->tlist));
+		rt_list_insert_before(&(rt_thread_priority_table[thread->current_priority]), &(thread->tlist));
+		rt_hw_interrupt_enable(level);
+		rt_schedule();
+		return RT_EOK;
+	}
+	
+	rt_hw_interrupt_enable(level);
 	return RT_EOK;
 }

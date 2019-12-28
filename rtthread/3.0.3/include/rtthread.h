@@ -21,12 +21,15 @@ rt_err_t rt_thread_init(struct rt_thread *thread,
 												void             *parameter,
 												void             *stack_start,
 												rt_uint32_t      stack_size,
-												rt_uint8_t       priority);
+												rt_uint8_t       priority,
+												rt_uint32_t      tick);
 
 rt_err_t rt_thread_startup(rt_thread_t thread);
 rt_err_t rt_thread_resume(rt_thread_t thread);
 rt_err_t rt_thread_suspend(rt_thread_t thread);
+rt_err_t rt_thread_yield(void);
 void rt_thread_timeout(void *parameter);
+rt_thread_t rt_thread_self(void);
 												
 void rt_thread_idle_init(void);
 rt_err_t rt_thread_delay(rt_tick_t tick);
